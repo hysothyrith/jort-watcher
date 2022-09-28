@@ -1,8 +1,8 @@
-import { MaxWidthBox } from "../components/MaxWidthBox";
-import { useCallback, useEffect, useRef, useState } from "react";
-import io from "socket.io-client";
-import { apiUrl } from "../config/app";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import io from "socket.io-client";
+import { MaxWidthBox } from "../components/MaxWidthBox";
+import { apiUrl } from "../config/app";
 
 interface Stats {
   smallVehicleCapacity: number;
@@ -21,12 +21,7 @@ export default function Stats() {
   );
   const [partnerName, setPartnerName] = useState("--");
   const [parkingLotName, setParkingLotName] = useState("--");
-  const [stats, setStats] = useState<Stats | null>({
-    smallVehicleCapacity: 1000,
-    smallVehicleCapacityAvailable: 100,
-    largeVehicleCapacity: 100,
-    largeVehicleCapacityAvailable: 100,
-  });
+  const [stats, setStats] = useState<Stats | null>(null);
 
   const openSocket = useCallback(() => {
     const socket = io(`${apiUrl}/stats`);
@@ -39,9 +34,10 @@ export default function Stats() {
     });
 
     socket.on("subscribed", (payload) => {
-      setPartnerName(payload.partnerName);
-      setParkingLotName(payload.parkingLotName);
-      setStats({ ...payload });
+      const { partnerName, parkingLotName, ...stats } = payload;
+      setPartnerName(partnerName);
+      setParkingLotName(parkingLotName);
+      setStats({ ...stats });
     });
 
     socket.on("changed", (payload) => {
@@ -94,37 +90,35 @@ export default function Stats() {
           </div>
         </div>
 
-        {stats ? (
-          <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <h2 className="prose text-5xl font-semibold">Small Vehicles</h2>
             <div>
-              <h2 className="prose text-5xl font-semibold">Small Vehicles</h2>
-              <div>
-                <span className="text-9xl font-bold">
-                  {stats.smallVehicleCapacityAvailable}
-                </span>
-                <span className="inline-block text-5xl -translate-y-2">/</span>
-                <span className="inline-block text-5xl -translate-y-0.5">
-                  {stats.smallVehicleCapacity}
-                </span>
-              </div>
-              <div className="text-3xl">spots available</div>
+              <span className="text-9xl font-bold">
+                {stats?.smallVehicleCapacityAvailable ?? "--"}
+              </span>
+              <span className="inline-block text-5xl -translate-y-2">/</span>
+              <span className="inline-block text-5xl -translate-y-0.5">
+                {stats?.smallVehicleCapacity ?? "--"}
+              </span>
             </div>
-
-            <div>
-              <h2 className="prose text-5xl font-semibold">Large Vehicles</h2>
-              <div>
-                <span className="text-9xl font-bold">
-                  {stats.largeVehicleCapacityAvailable}
-                </span>
-                <span className="inline-block text-5xl -translate-y-2">/</span>
-                <span className="inline-block text-5xl -translate-y-0.5">
-                  {stats.largeVehicleCapacity}
-                </span>
-              </div>
-              <div className="text-3xl">spots available</div>
-            </div>
+            <div className="text-3xl">spots available</div>
           </div>
-        ) : null}
+
+          <div>
+            <h2 className="prose text-5xl font-semibold">Large Vehicles</h2>
+            <div>
+              <span className="text-9xl font-bold">
+                {stats?.largeVehicleCapacityAvailable ?? "--"}
+              </span>
+              <span className="inline-block text-5xl -translate-y-2">/</span>
+              <span className="inline-block text-5xl -translate-y-0.5">
+                {stats?.largeVehicleCapacity ?? "--"}
+              </span>
+            </div>
+            <div className="text-3xl">spots available</div>
+          </div>
+        </div>
       </MaxWidthBox>
     </div>
   );
