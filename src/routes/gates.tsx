@@ -6,7 +6,7 @@ import io from "socket.io-client";
 import { apiUrl } from "../config/app";
 
 export default function Gates() {
-  const [gateId, setGateId] = useState("");
+  const [gateId, setGateId] = useState("5ed8522a-784e-4561-89fb-4fd2c8eca1b1");
   const [socket, setSocket] = useState<ReturnType<typeof io> | null>(null);
   const [socketStatus, setSocketStatus] = useState<
     "idle" | "connecting" | "connected"
@@ -14,7 +14,6 @@ export default function Gates() {
   const [gateState, setGateState] = useState<"closed" | "open" | "denied">(
     "closed"
   );
-  const [images, setImages] = useState<FileList | null>(null);
   const [qrSrc, setQrSrc] = useState<string | null>(null);
   const webcamRef = useRef<Webcam>(null);
 
@@ -129,16 +128,12 @@ export default function Gates() {
               }}
             >
               <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImages(e.target.files)}
-              />
-              <input
                 type="text"
                 className="rounded-md py-2 px-2 border border-gray-300 w-full"
                 placeholder="Gate ID"
                 value={gateId}
                 onChange={(e) => setGateId(e.target.value)}
+                spellCheck={false}
               />
 
               <br />
