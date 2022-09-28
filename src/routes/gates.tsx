@@ -117,7 +117,7 @@ export default function Gates() {
     >
       <div className="flex h-full justify-center items-center">
         {socketStatus !== "connected" ? (
-          <div className="rounded-md border border-gray-100 px-6 pb-8 pt-4 w-96 drop-shadow-lg bg-white -translate-y-16">
+          <div className="rounded-md border border-gray-100 px-6 pb-8 pt-4 w-96 drop-shadow-lg bg-white">
             <h2 className="prose prose-xl font-semibold mb-2">Gate Connect</h2>
             <form
               onSubmit={(e) => {
@@ -139,7 +139,7 @@ export default function Gates() {
               <br />
               <div className="mb-2"></div>
               <button
-                className="bg-gray-200 hover:bg-gray-300 py-2 px-5 rounded-md border border-gray-300 transition-colors text-slate-500 drop-shadow-sm"
+                className="transition-colors duration-100 block border border-gray-200 hover:border-gray-300 hover:bg-gray-100 rounded-md p-2 px-5 shadow-sm"
                 type="submit"
               >
                 {socketStatus === "idle" ? "Connect" : "Connecting..."}
@@ -149,10 +149,10 @@ export default function Gates() {
         ) : null}
         {qrSrc ? (
           <div>
-            <div className="-translate-y-32">
+            <div className="-translate-y-8">
               <img src={qrSrc} alt="Gate QR code" />
             </div>
-            <div className="absolute left-0 right-0 bottom-0 h-80 flex justify-center">
+            <div className="absolute left-0 right-0 bottom-0 h-40 flex justify-center">
               <Webcam screenshotFormat="image/jpeg" ref={webcamRef} />
             </div>
           </div>
