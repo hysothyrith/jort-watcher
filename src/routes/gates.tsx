@@ -47,11 +47,17 @@ export default function Gates() {
     socket.on("toast", (payload) => {
       switch (payload.type) {
         case "success":
-          return toast.success(payload.message);
+          return toast.success(payload.message, {
+            duration: 10_000,
+          });
         case "error":
-          return toast.error(payload.message);
+          return toast.error(payload.message, {
+            duration: 10_000,
+          });
         default:
-          return toast(payload.message);
+          return toast(payload.message, {
+            duration: 10_000,
+          });
       }
     });
 
