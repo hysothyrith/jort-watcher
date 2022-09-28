@@ -1,9 +1,9 @@
-// import { MaxWidthBox } from "../components/MaxWidthBox";
-import io from "socket.io-client";
 import classnames from "classnames";
+import { useCallback, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import Webcam from "react-webcam";
+import io from "socket.io-client";
 import { apiUrl } from "../config/app";
-import { useCallback, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 
 export default function Gates() {
   const [gateId, setGateId] = useState("");
@@ -16,6 +16,12 @@ export default function Gates() {
   );
   const [images, setImages] = useState<FileList | null>(null);
   const [qrSrc, setQrSrc] = useState<string | null>(null);
+  const webcamRef = useRef<Webcam>(null);
+
+  const capture = useCallback(
+    () => webcamRef.current?.getScreenshot(),
+    [webcamRef]
+  );
 
   const openSocket = useCallback(() => {
     const socket = io(`${apiUrl}/gate`);
@@ -75,18 +81,22 @@ export default function Gates() {
     const formData = new FormData();
     formData.append("tenancyId", tenancyId);
     formData.append("gateId", gateId);
-    for (const image of images ?? []) {
-      formData.append("images", image);
+    const image = capture();
+    if (image) {
+      fetch(image)
+        .then((res) => res.blob())
+        .then((blob) => new File([blob], "image.jpg", { type: "image/jpeg" }))
+        .then((file) => {
+          formData.append("images", file);
+
+          fetch(`${apiUrl}/captures`, {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then(console.log);
+        });
     }
-
-    console.log(images?.length);
-
-    fetch(`${apiUrl}/captures`, {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then(console.log);
   }
 
   function openGate() {
@@ -144,7 +154,12 @@ export default function Gates() {
         ) : null}
         {qrSrc ? (
           <div>
-            <img src={qrSrc} alt="Gate QR code" />
+            <div className="-translate-y-32">
+              <img src={qrSrc} alt="Gate QR code" />
+            </div>
+            <div className="absolute left-0 right-0 bottom-0 h-80 flex justify-center">
+              <Webcam screenshotFormat="image/jpeg" ref={webcamRef} />
+            </div>
           </div>
         ) : null}
       </div>
