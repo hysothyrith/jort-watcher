@@ -26,52 +26,54 @@ export default function Gates() {
     const socket = io(`${apiUrl}/gate`);
     setSocketStatus("connecting");
 
-    socket.emit("start", { gateId });
+    socket.on("connect", () => {
+      socket.emit("start", { gateId });
 
-    socket.on("connected", (payload) => {
-      setSocketStatus("connected");
-      setQrSrc(payload.qr);
+      socket.on("connected", (payload) => {
+        setSocketStatus("connected");
+        setQrSrc(payload.qr);
+      });
+
+      socket.on("capture", (payload) => {
+        captureImages(payload.tenancyId);
+      });
+
+      socket.on("allow", () => {
+        openGate();
+      });
+
+      socket.on("deny", () => {
+        setGateState("denied");
+
+        setTimeout(() => {
+          setGateState("closed");
+        }, 5000);
+      });
+
+      socket.on("toast", (payload) => {
+        switch (payload.type) {
+          case "success":
+            return toast.success(payload.message, {
+              duration: 10_000,
+            });
+          case "error":
+            return toast.error(payload.message, {
+              duration: 10_000,
+            });
+          default:
+            return toast(payload.message, {
+              duration: 10_000,
+            });
+        }
+      });
+
+      socket.on("disconnect", () => {
+        setSocketStatus("idle");
+        setQrSrc(null);
+      });
+
+      setSocket(socket);
     });
-
-    socket.on("capture", (payload) => {
-      captureImages(payload.tenancyId);
-    });
-
-    socket.on("allow", () => {
-      openGate();
-    });
-
-    socket.on("deny", () => {
-      setGateState("denied");
-
-      setTimeout(() => {
-        setGateState("closed");
-      }, 5000);
-    });
-
-    socket.on("toast", (payload) => {
-      switch (payload.type) {
-        case "success":
-          return toast.success(payload.message, {
-            duration: 10_000,
-          });
-        case "error":
-          return toast.error(payload.message, {
-            duration: 10_000,
-          });
-        default:
-          return toast(payload.message, {
-            duration: 10_000,
-          });
-      }
-    });
-
-    socket.on("disconnect", () => {
-      setSocketStatus("idle");
-      setQrSrc(null);
-    });
-
-    setSocket(socket);
   }, [gateId]);
 
   function captureImages(tenancyId: string) {
@@ -141,6 +143,7 @@ export default function Gates() {
               <button
                 className="transition-colors duration-100 block border border-gray-200 hover:border-gray-300 hover:bg-gray-100 rounded-md p-2 px-5 shadow-sm"
                 type="submit"
+                disabled={socketStatus === "connecting"}
               >
                 {socketStatus === "idle" ? "Connect" : "Connecting..."}
               </button>
