@@ -70,6 +70,7 @@ export default function Gates() {
       socket.on("disconnect", () => {
         setSocketStatus("idle");
         setQrSrc(null);
+        openSocket();
       });
 
       setSocket(socket);
