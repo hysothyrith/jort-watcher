@@ -76,7 +76,7 @@ export default function Stats() {
   return (
     <div className="mt-8">
       <MaxWidthBox>
-        <h1 className="prose prose-2xl font-semibold">Statistics</h1>
+        <h1 className="prose prose-2xl font-semibold">Availability</h1>
         <div className="mb-4"></div>
 
         <div className="grid grid-cols-2 gap-4 mb-32">
@@ -92,7 +92,7 @@ export default function Stats() {
 
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <h2 className="prose text-5xl font-semibold">Small Vehicles</h2>
+            <h2 className="prose text-5xl font-semibold">Motorcycle</h2>
             <div>
               <span className="text-9xl font-bold">
                 {stats?.smallVehicleCapacityAvailable ?? "--"}
@@ -106,7 +106,7 @@ export default function Stats() {
           </div>
 
           <div>
-            <h2 className="prose text-5xl font-semibold">Large Vehicles</h2>
+            <h2 className="prose text-5xl font-semibold">Car</h2>
             <div>
               <span className="text-9xl font-bold">
                 {stats?.largeVehicleCapacityAvailable ?? "--"}
