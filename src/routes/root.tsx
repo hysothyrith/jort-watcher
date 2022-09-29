@@ -9,7 +9,7 @@ export default function Root() {
       <div className="border-solid border-b border-gray-200 py-1.5">
         <MaxWidthBox>
           <Link to={`/`} className="prose prose-lg font-semibold">
-            Jort
+            QR Jomnot
           </Link>
         </MaxWidthBox>
       </div>
