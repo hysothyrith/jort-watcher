@@ -79,18 +79,18 @@ export default function Stats() {
         <h1 className="prose prose-2xl font-semibold">Availability</h1>
         <div className="mb-4"></div>
 
-        <div className="grid grid-cols-2 gap-4 mb-32">
+        <div className="grid grid-cols-2 gap-4 mb-40">
           <div>
             <h2 className="prose prose-lg font-semibold">Partner</h2>
-            <div>{partnerName}</div>
+            <div className="text-3xl">{partnerName}</div>
           </div>
           <div>
             <h2 className="prose prose-lg font-semibold">Parking Lot</h2>
-            <div>{parkingLotName}</div>
+            <div className="text-3xl">{parkingLotName}</div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <h2 className="prose text-5xl font-semibold">Motorcycle</h2>
             <div>
